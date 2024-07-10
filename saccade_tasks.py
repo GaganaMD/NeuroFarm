@@ -10,7 +10,7 @@ class sDMS(gym.Env):
     Procedure:
         Sample Presentation: The subject fixates on a central point, and a sample stimulus briefly appears at a peripheral location.
         Delay Period: The sample stimulus is removed, and the subject continues to fixate on the central point during a delay.
-        Intervening Stimuli: Multiple stimuli appear one by one at various peripheral locations.
+        Intervening Stimuli: Multiple stimuli appear one by one at various peripheral locations, including the original sample stimulus.
         Choice Phase: The subject must make a saccade to the location of the original sample stimulus.
 
     Applications:
@@ -45,8 +45,14 @@ class sDMS(gym.Env):
         self.current_step = 0
         self.current_intervening = 0
         self.sample_location = np.random.uniform(0, 360)
+
+        # Generate random intervening stimuli and insert the sample stimulus randomly
         self.intervening_locations = np.random.uniform(
-            0, 360, self.num_intervening)
+            0, 360, self.num_intervening - 1)
+        insertion_index = np.random.randint(self.num_intervening)
+        self.intervening_locations = np.insert(
+            self.intervening_locations, insertion_index, self.sample_location)
+
         self.state = np.array([self.sample_location])
         self.phase = 'sample_presentation'
 

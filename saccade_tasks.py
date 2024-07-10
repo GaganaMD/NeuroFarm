@@ -59,6 +59,7 @@ class sDMS(gym.Env):
         self.sample_location = sample_location.clone()
         self.state = self.sample_location.clone().unsqueeze(0)
         self.phase = 'sample_presentation'
+        self.action_angle = None  # Initialize action_angle
 
         return self.state.numpy()
 
@@ -102,9 +103,9 @@ class sDMS(gym.Env):
 
         elif self.phase == 'choice_phase':
             done = True
-            action_angle = action.item()  # Extract the angle from action
+            self.action_angle = action.item()  # Extract the angle from action
             # Gaussian reward centered on sample_location
-            reward = np.exp(-0.5 * ((action_angle -
+            reward = np.exp(-0.5 * ((self.action_angle -
                             self.sample_location.item()) / 10)**2)
 
         info = {}
@@ -118,9 +119,13 @@ class sDMS(gym.Env):
         elif self.phase == 'intervening_stimuli':
             print(f"Intervening stimulus at {self.state.item()} degrees")
         elif self.phase == 'choice_phase':
-            print("Make your choice.")
+            if self.action_angle is None:
+                print("Make your choice.")
+            else:
+                print(f"Choice was at {self.action_angle} degrees")
 
 
+# Create the environment
 # Create the environment
 env = sDMS()
 

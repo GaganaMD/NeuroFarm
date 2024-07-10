@@ -1,5 +1,6 @@
 import gymnasium as gym
 from gymnasium import spaces
+import torch
 import numpy as np
 
 
@@ -33,7 +34,7 @@ class sDMS(gym.Env):
         self.sample_duration = sample_duration
         self.intervening_duration = intervening_duration
 
-        # Internal state
+        # Internal state (using PyTorch tensors)
         self.state = None
         self.sample_location = None
         self.intervening_locations = None
@@ -44,19 +45,27 @@ class sDMS(gym.Env):
     def reset(self):
         self.current_step = 0
         self.current_intervening = 0
-        self.sample_location = np.random.uniform(0, 360)
+        self.sample_location = torch.tensor([np.random.uniform(
+            0, 360)], dtype=torch.float32)  # Ensure one-dimensional tensor
 
         # Generate random intervening stimuli and insert the sample stimulus randomly
-        self.intervening_locations = np.random.uniform(
-            0, 360, self.num_intervening - 1)
+        self.intervening_locations = torch.tensor(np.random.uniform(
+            0, 360, self.num_intervening - 1), dtype=torch.float32)
         insertion_index = np.random.randint(self.num_intervening)
-        self.intervening_locations = np.insert(
-            self.intervening_locations, insertion_index, self.sample_location)
 
-        self.state = np.array([self.sample_location])
+        # Convert to one-dimensional tensor if necessary
+        # Ensure one-dimensional tensor
+        self.intervening_locations = self.intervening_locations.view(-1)
+
+        # Concatenate tensors
+        self.intervening_locations = torch.cat((self.intervening_locations[:insertion_index],
+                                                self.sample_location,
+                                                self.intervening_locations[insertion_index:]))
+
+        self.state = self.sample_location.clone().unsqueeze(0)
         self.phase = 'sample_presentation'
 
-        return self.state
+        return self.state.numpy()
 
     def step(self, action):
         reward = 0
@@ -67,19 +76,21 @@ class sDMS(gym.Env):
             if self.current_step >= self.sample_duration:
                 self.phase = 'delay_period'
                 self.current_step = 0
-                self.state = np.array([0.0])  # Reset observation during delay
+                # Reset observation during delay
+                self.state = torch.tensor([0.0], dtype=torch.float32)
             else:
-                self.state = np.array([self.sample_location])
+                self.state = self.sample_location.clone().unsqueeze(0)
 
         elif self.phase == 'delay_period':
             self.current_step += 1
             if self.current_step >= self.delay_period:
                 self.phase = 'intervening_stimuli'
                 self.current_step = 0
-                self.state = np.array(
-                    [self.intervening_locations[self.current_intervening]])
+                self.state = self.intervening_locations[self.current_intervening].clone(
+                ).unsqueeze(0)
             else:
-                self.state = np.array([0.0])  # Continue delay period
+                # Continue delay period
+                self.state = torch.tensor([0.0], dtype=torch.float32)
 
         elif self.phase == 'intervening_stimuli':
             self.current_step += 1
@@ -88,29 +99,29 @@ class sDMS(gym.Env):
                 if self.current_intervening >= self.num_intervening:
                     self.phase = 'choice_phase'
                     # No stimulus shown, observation reset
-                    self.state = np.array([0.0])
+                    self.state = torch.tensor([0.0], dtype=torch.float32)
                 else:
                     self.current_step = 0
-                    self.state = np.array(
-                        [self.intervening_locations[self.current_intervening]])
+                    self.state = self.intervening_locations[self.current_intervening].clone(
+                    ).unsqueeze(0)
 
         elif self.phase == 'choice_phase':
             done = True
-            action_angle = action[0]  # Extract the angle from action
+            action_angle = action.item()  # Extract the angle from action
             # Gaussian reward centered on sample_location
-            reward = np.exp(-0.5 *
-                            ((action_angle - self.sample_location) / 10)**2)
+            reward = np.exp(-0.5 * ((action_angle -
+                            self.sample_location.item()) / 10)**2)
 
         info = {}
-        return self.state, reward, done, info
+        return self.state.numpy(), reward, done, info
 
     def render(self, mode='human'):
         if self.phase == 'sample_presentation':
-            print(f"Sample at {self.sample_location} degrees")
+            print(f"Sample at {self.sample_location.item()} degrees")
         elif self.phase == 'delay_period':
             print("Delay period...")
         elif self.phase == 'intervening_stimuli':
-            print(f"Intervening stimulus at {self.state[0]} degrees")
+            print(f"Intervening stimulus at {self.state.item()} degrees")
         elif self.phase == 'choice_phase':
             print("Make your choice.")
 
@@ -123,7 +134,8 @@ obs = env.reset()
 done = False
 total_reward = 0
 while not done:
-    action = env.action_space.sample()  # Random action
+    action = torch.tensor(env.action_space.sample(),
+                          dtype=torch.float32)  # Random action
     obs, reward, done, info = env.step(action)
     env.render()
     total_reward += reward

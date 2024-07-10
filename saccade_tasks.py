@@ -45,23 +45,18 @@ class sDMS(gym.Env):
     def reset(self):
         self.current_step = 0
         self.current_intervening = 0
-        self.sample_location = torch.tensor([np.random.uniform(
-            0, 360)], dtype=torch.float32)  # Ensure one-dimensional tensor
-
-        # Generate random intervening stimuli and insert the sample stimulus randomly
-        self.intervening_locations = torch.tensor(np.random.uniform(
+        sample_location = torch.tensor(
+            [np.random.uniform(0, 360)], dtype=torch.float32)
+        intervening_locations = torch.tensor(np.random.uniform(
             0, 360, self.num_intervening - 1), dtype=torch.float32)
+
+        # Randomly insert sample_location into intervening_locations
         insertion_index = np.random.randint(self.num_intervening)
+        self.intervening_locations = torch.cat((intervening_locations[:insertion_index],
+                                                sample_location,
+                                                intervening_locations[insertion_index:]))
 
-        # Convert to one-dimensional tensor if necessary
-        # Ensure one-dimensional tensor
-        self.intervening_locations = self.intervening_locations.view(-1)
-
-        # Concatenate tensors
-        self.intervening_locations = torch.cat((self.intervening_locations[:insertion_index],
-                                                self.sample_location,
-                                                self.intervening_locations[insertion_index:]))
-
+        self.sample_location = sample_location.clone()
         self.state = self.sample_location.clone().unsqueeze(0)
         self.phase = 'sample_presentation'
 
@@ -130,14 +125,15 @@ class sDMS(gym.Env):
 env = sDMS()
 
 # Example usage
-obs = env.reset()
-done = False
 total_reward = 0
-while not done:
-    action = torch.tensor(env.action_space.sample(),
-                          dtype=torch.float32)  # Random action
-    obs, reward, done, info = env.step(action)
-    env.render()
-    total_reward += reward
+for j in range(3):
+    obs = env.reset()
+    done = False
+    while not done:
+        action = torch.tensor(env.action_space.sample(),
+                              dtype=torch.float32)  # Random action
+        obs, reward, done, info = env.step(action)
+        env.render()
+        total_reward += reward
 
 print(f"Total reward: {total_reward}")

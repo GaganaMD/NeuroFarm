@@ -17,6 +17,8 @@ class sDMS(gym.Env):
     Applications:
         Studies working memory and spatial recognition.
         Can be used to investigate the neural basis of memory retention and saccadic planning.
+
+    Literature on the task: https://www.jneurosci.org/content/jneuro/16/16/5154.full.pdf
     '''
 
     def __init__(self, num_intervening=3, delay_period=10, sample_duration=5, intervening_duration=5):
@@ -51,10 +53,9 @@ class sDMS(gym.Env):
             0, 360, self.num_intervening - 1), dtype=torch.float32)
 
         # Randomly insert sample_location into intervening_locations
-        insertion_index = np.random.randint(self.num_intervening)
-        self.intervening_locations = torch.cat((intervening_locations[:insertion_index],
-                                                sample_location,
-                                                intervening_locations[insertion_index:]))
+        # insertion_index = np.random.randint(self.num_intervening)
+        self.intervening_locations = torch.cat((intervening_locations,
+                                                sample_location))
 
         self.sample_location = sample_location.clone()
         self.state = self.sample_location.clone().unsqueeze(0)

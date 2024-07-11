@@ -11,8 +11,8 @@ class sDMS(gym.Env):
     Procedure:
         Sample Presentation: The subject fixates on a central point, and a sample stimulus briefly appears at a peripheral location.
         Delay Period: The sample stimulus is removed, and the subject continues to fixate on the central point during a delay.
-        Intervening Stimuli: Multiple stimuli appear one by one at various peripheral locations, including the original sample stimulus.
-        Choice Phase: The subject must make a saccade to the location of the original sample stimulus.
+        Intervening Stimuli: Multiple stimuli appear one by one at various peripheral locations.
+        Choice Phase: The original stimulus is shown. The subject must make a saccade to the location of the original sample stimulus.
 
     Applications:
         Studies working memory and spatial recognition.
@@ -99,6 +99,7 @@ class sDMS(gym.Env):
                 self.current_intervening += 1
                 if self.current_intervening >= self.num_intervening:
                     self.phase = 'choice_phase'
+                    self.current_step = 0
                     # No stimulus shown, observation reset
                     self.state = torch.tensor([0.0], dtype=torch.float32)
                     self.choice_phase_steps = self.intervening_duration
@@ -108,8 +109,10 @@ class sDMS(gym.Env):
                     ).unsqueeze(0)
 
         elif self.phase == 'choice_phase':
+            self.current_step += 1
             self.state = self.sample_location.clone().unsqueeze(0)
             if self.current_step >= self.choice_phase_steps:
+                print(self.choice_phase_steps, self.current_step)
                 done = True
              # Extract the angle from action
             # Gaussian reward centered on sample_location

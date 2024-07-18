@@ -48,16 +48,16 @@ def make_transform():
         # Normalize images as per ResNet-50 requirements
         # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
-
+    '''
     transform = T.Compose(
         [
-            T.RandomCrop(32, padding=4),
-            T.RandomHorizontalFlip(),
+            # T.RandomCrop(32, padding=4),
+            # T.RandomHorizontalFlip(),
             T.ToTensor(),
             T.Normalize(mean, std),
         ]
     )
-
+    '''
     return transform
 
 

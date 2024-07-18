@@ -7,7 +7,7 @@ print(dat.shape)
 plt.plot(dat)
 plt.show()
 
-dat = np.load('/home/maria/NeuroFarm/cifar10_task/logits/logits_cifar10.npy')
+# dat = np.load('/home/maria/NeuroFarm/cifar10_task/logits/logits_cifar10.npy')
 # dat = np.load('/home/maria/NeuroFarm/cifar10_task/logits/embeddings copy.npy')
 
 plt.imshow(dat)

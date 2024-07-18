@@ -67,8 +67,10 @@ def vanilla_train(config_dict):
 def cifar_train(config_dict):
     def prepare_data():
         train_data = np.load(
+            # '../cifar10_task/logits/embeddings copy.npy')
             '../cifar10_task/logits/logits_cifar10.npy')
         train_labels = np.load(
+            # '../cifar10_task/logits/labels copy.npy')
             '../cifar10_task/logits/labels_cifar10.npy')
 
         # Adjust train_labels as per the original intent (adding 1)
@@ -99,7 +101,10 @@ def cifar_train(config_dict):
     train_data, class_dct = prepare_data()
 
     start = time.time()
-    n_stimuli = config_dict['state_size'] - 1
+    # n_stimuli = config_dict['action_size'] - 1
+    # print('boom!', n_stimuli)
+    n_stimuli = config_dict['action_size'] - 1
+    # print('boom!', n_stimuli)
     env = DelaySampleToMatchEnv(n_stimuli=n_stimuli)
     if config_dict['q_network'] == RNNQNetwork:
         agent = DQNAgent(config_dict)

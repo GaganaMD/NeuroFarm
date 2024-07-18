@@ -6,10 +6,10 @@ from train import vanilla_train, mnist_train, cifar_train
 # Define configurations and parameters
 configurations = [
     ("short-seq", "easy-seq"),
-    ("short-seq", "mnist-seq"),
+    # ("short-seq", "mnist-seq"),
     ("short-seq", "cifar10-seq"),
     ("long-seq", "easy-seq"),
-    ("long-seq", "mnist-seq"),
+    # ("long-seq", "mnist-seq"),
     ("long-seq", "cifar10-seq")
 ]
 
@@ -42,12 +42,17 @@ for seq_type, env_type in configurations:
     for loss_name, loss_fn in losses.items():
         for net_name, net_class in networks.items():
             config_key = (seq_type, env_type, loss_name, net_name)
-            if seq_type[1] == 'easy-seq':
+            # print(seq_type, env_type)
+            if env_type == 'easy-seq':
                 state_size = state_sizes[seq_type]
-            else:
+                action_size = state_size
+            elif env_type == 'cifar10-seq':
                 # Logits for MNIST and CIFAR10 are 10-dimensional
                 state_size = 10
-            action_size = state_size
+                if seq_type == 'short-seq':
+                    action_size = 6
+                elif seq_type == 'long-seq':
+                    action_size = 11
             hidden_size = 64 if seq_type == "short-seq" else 128
             model_path = f"../rnn_models/{seq_type}_{env_type}_{loss_name}_{net_name}.pth"
             learning_curve_path = f"../learning_curves/{seq_type}_{env_type}_{loss_name}_{net_name}.npy"
@@ -67,7 +72,7 @@ for seq_type, env_type in configurations:
                 'learning_curve_path': learning_curve_path,
                 'mode': 'train-from-zero',
                 'train_function': train_function,
-                'train_steps': 500
+                'train_steps': 50000
             }
 
 # Print to verify

@@ -36,6 +36,8 @@ class DQNAgent(nn.Module):
         self.load_path = config_dict['model_path']
         # possible modes: 'train-from-zero', 'train', 'eval'
         if config_dict['mode'] == 'train-from-zero':
+            # print(config_dict['state_size'])
+            # print(config_dict['action_size'])
             self.q_network = config_dict['q_network'](
                 config_dict['state_size'], config_dict['hidden_size'], config_dict['action_size'])
         else:
@@ -158,7 +160,10 @@ class LSTMDQNAgent(nn.Module):
         self.save_path = config_dict['model_path']
         self.load_path = config_dict['model_path']
         # possible modes: 'train-from-zero', 'train', 'eval'
+
         if config_dict['mode'] == 'train-from-zero':
+            print(config_dict['state_size'])
+            print(config_dict['action_size'])
             self.q_network = config_dict['q_network'](
                 config_dict['state_size'], config_dict['hidden_size'], config_dict['action_size'])
         else:

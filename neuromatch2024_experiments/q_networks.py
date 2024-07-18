@@ -10,7 +10,7 @@ class RNNQNetwork(nn.Module):
         self.fc = nn.Linear(hidden_size, output_size)
 
     def forward(self, x, hidden):
-        print(hidden)
+        # print(hidden)
         out, hidden = self.rnn(x, hidden)
         q_values = self.fc(out)
         return q_values, hidden

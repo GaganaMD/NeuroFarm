@@ -33,7 +33,7 @@ def run_experiment(experiment):
     train(experiment)
 
 
-myexp = experiments[('short-seq', 'easy-seq', 'MSELoss', 'LSTM')]
+myexp = experiments[('short-seq', 'easy-seq', 'MSELoss', 'RNN')]
 myexp = experiments[('short-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
 print(myexp['q_network'])
 run_experiment(myexp)

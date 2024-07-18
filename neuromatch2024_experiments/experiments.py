@@ -21,7 +21,7 @@ networks = {
 
 losses = {
     "MSELoss": nn.MSELoss,
-    "SmoothL1Loss": nn.SmoothL1Loss
+    # "SmoothL1Loss": nn.SmoothL1Loss
 }
 
 state_sizes = {

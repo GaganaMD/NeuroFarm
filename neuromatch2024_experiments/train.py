@@ -107,7 +107,7 @@ def cifar_train(config_dict):
         agent = LSTMDQNAgent(config_dict)
 
     n_episodes = 50000
-    win_pct_list = []
+    episode_rewards = []
     scores = []
 
     for i in range(n_episodes):
@@ -140,7 +140,13 @@ def cifar_train(config_dict):
 
         if i % 100 == 0:
             avg_score = np.mean(scores[-100:])
+            episode_rewards.append(avg_score)
             print(f"Episode {i} - Average Score: {avg_score:.2f}")
+
+    end = time.time()
+    agent.save_model()
+    print(f'It took {end-start} seconds to train the model')
+    np.save(config_dict['learning_curve_path'], episode_rewards)
 
 
 def mnist_train(config_dict):

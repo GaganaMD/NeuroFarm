@@ -130,6 +130,7 @@ class sDMS(gym.Env):
         elif self.phase == 'intervening_stimuli':
             print(f"Intervening stimulus at {self.state.item()} degrees")
         elif self.phase == 'choice_phase':
+            print(f"Target stimulus at {self.state.item()} degrees")
             if self.action_angle is None:
                 print("Make your choice.")
             else:

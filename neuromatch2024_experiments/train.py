@@ -106,7 +106,7 @@ def cifar_train(config_dict):
     elif config_dict['q_network'] == LSTMQNetwork:
         agent = LSTMDQNAgent(config_dict)
 
-    n_episodes = 50000
+    n_episodes = config_dict['train_steps']
     episode_rewards = []
     scores = []
 

@@ -104,7 +104,7 @@ def cifar_train(config_dict):
     # n_stimuli = config_dict['action_size'] - 1
     # print('boom!', n_stimuli)
     n_stimuli = config_dict['action_size'] - 1
-    # print('boom!', n_stimuli)
+    print('boom!', n_stimuli)
     env = DelaySampleToMatchEnv(n_stimuli=n_stimuli)
     if config_dict['q_network'] == RNNQNetwork:
         agent = DQNAgent(config_dict)

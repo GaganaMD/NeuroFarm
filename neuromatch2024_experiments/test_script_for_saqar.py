@@ -3,12 +3,15 @@ from agents import DQNAgent
 from environments import DelaySampleToMatchEnv
 from eval_scripts import prepare_data
 import numpy as np
+import matplotlib.pyplot as plt
 
 experiment = experiments[('short-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
 env = DelaySampleToMatchEnv(n_stimuli=experiment['action_size'] - 1)
 agent = DQNAgent(experiment)
 
 agent.load_model('eval')
+
+agent.epsilon = 0.00
 
 print(agent.q_network)
 
@@ -42,3 +45,4 @@ for i in range(n_episodes):
 
 hids = np.array(hids).squeeze(1).squeeze(1)
 print(hids.shape)
+print(hids)

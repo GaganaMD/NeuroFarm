@@ -281,6 +281,8 @@ class LSTMDQNAgent(nn.Module):
         # Optimize the model
         self.optimizer.zero_grad()
         loss.backward()
+        # torch.nn.utils.clip_grad_norm_(
+        # self.q_network.parameters(), max_norm=1.0)
         self.optimizer.step()
 
         if self.epsilon > self.eps_end:

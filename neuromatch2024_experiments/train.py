@@ -90,7 +90,7 @@ def cifar_train(config_dict):
 
         # Create a dictionary to store indices of each class
         class_dct = {}
-        for i in range(12):  # Adjusted to iterate from 0 to 10 (inclusive)
+        for i in range(11):  # Adjusted to iterate from 0 to 10 (inclusive)
             class_dct[i] = np.where(train_labels == i)[0]
 
         # Print example usage of class_dct
@@ -104,7 +104,6 @@ def cifar_train(config_dict):
     # n_stimuli = config_dict['action_size'] - 1
     # print('boom!', n_stimuli)
     n_stimuli = config_dict['action_size'] - 1
-    print('boom!', n_stimuli)
     env = DelaySampleToMatchEnv(n_stimuli=n_stimuli)
     if config_dict['q_network'] == RNNQNetwork:
         agent = DQNAgent(config_dict)

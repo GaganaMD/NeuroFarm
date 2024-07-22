@@ -5,6 +5,11 @@ from eval_scripts import prepare_data
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+def move_tuple_to_device(hidden_tuple, device):
+    return (hidden_tuple[0].to(device), hidden_tuple[1].to(device))
+
+
 experiment = experiments[('short-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
 env = DelaySampleToMatchEnv(n_stimuli=experiment['action_size'] - 1)
 agent = DQNAgent(experiment)
@@ -29,7 +34,10 @@ for i in range(n_episodes):
     random_index = np.random.choice(indices)
     state = train_data[random_index].flatten()
     score = 0
-    hidden = agent.q_network.init_hidden().to(agent.device)
+    if isinstance(hidden, tuple):
+        hidden = move_tuple_to_device(hidden, agent.device)
+    else:
+        hidden = hidden.to(agent.device)
     while not done:
         action, next_hidden = agent.select_action(state, hidden)
         next_state, reward, done, info = env.step(action)  # Take the action
@@ -40,7 +48,10 @@ for i in range(n_episodes):
         # hids.append(hidden)
         state = next_state  # Move to the next state
         score += reward
-        hids.append(hidden.detach().cpu().numpy())
+        if isinstance(hidden, tuple):
+            hids.append(hidden.detach().cpu().numpy())
+        else:
+            hids.append(hidden[0].detach().cpu().numpy())
 
 
 hids = np.array(hids).squeeze(1).squeeze(1)

@@ -34,7 +34,9 @@ def run_experiment(experiment):
 
 
 myexp = experiments[('short-seq', 'easy-seq', 'MSELoss', 'RNN')]
-myexp = experiments[('short-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
-myexp = experiments[('long-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
+# myexp = experiments[('short-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
+# myexp = experiments[('long-seq', 'cifar10-seq', 'MSELoss', 'RNN')]
+# myexp = experiments[('long-seq', 'easy-seq', 'MSELoss', 'LSTM')]
+# myexp = experiments[('long-seq', 'cifar10-seq', 'MSELoss', 'LSTM')]
 print(myexp['q_network'])
 run_experiment(myexp)

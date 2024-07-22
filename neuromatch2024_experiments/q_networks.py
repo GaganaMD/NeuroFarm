@@ -6,7 +6,7 @@ class RNNQNetwork(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(RNNQNetwork, self).__init__()
         self.hidden_size = hidden_size
-        self.rnn = nn.RNN(input_size, hidden_size)
+        self.rnn = nn.RNN(input_size, hidden_size, nonlinearity='relu')
         self.fc = nn.Linear(hidden_size, output_size)
 
     def forward(self, x, hidden):

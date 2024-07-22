@@ -29,6 +29,7 @@ class DelaySampleToMatchEnv(gym.Env):
         # Randomly select n stimuli (1 to n_stimuli, excluding 0 which is the delay)
         stimuli = np.random.choice(
             range(1, self.n_stimuli + 1), self.n_stimuli, replace=False)
+
         self.first_stimulus = stimuli[0]
         # Create the sequence: stimulus1-delay-stimulus2-delay-...-stimulusN-stimulus1
         sequence = [0]
@@ -36,6 +37,7 @@ class DelaySampleToMatchEnv(gym.Env):
             sequence.append(stimulus)
             sequence.extend([0] * self.delay_length)  # 0 represents the delay
         sequence.append(stimuli[0])
+        # print(sequencep)
         return sequence
 
     def reset(self):

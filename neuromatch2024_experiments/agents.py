@@ -69,7 +69,7 @@ class DQNAgent(nn.Module):
         if mode == 'eval':
             self.q_network.eval()
         else:
-            self.q_network()
+            self.q_network.train()
 
     def save_model(self):
         torch.save({
@@ -195,7 +195,7 @@ class LSTMDQNAgent(nn.Module):
         if mode == 'eval':
             self.q_network.eval()
         else:
-            self.q_network()
+            self.q_network.train()
 
     def save_model(self):
         torch.save({

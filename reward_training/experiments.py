@@ -88,6 +88,7 @@ for item in configurations:
     experiments[item]['model_path'] = model_path
     experiments[item]['mode'] = 'train-from-zero'
     experiments[item]['train_steps'] = 50000
+    experiments[item]['learning_curve_path'] = learning_curve
 
     # if item == ("long-seq", "cifar10-seq", "LSTM", "Rew-100"):
     # experiments[item]['hidden_size'] = 512

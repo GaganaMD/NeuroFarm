@@ -6,8 +6,10 @@ import numpy as np
 class DelaySampleToMatchEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, n_stimuli=5, delay_length=1, reward=1):
+    def __init__(self, reward, n_stimuli=5, delay_length=1):
         super(DelaySampleToMatchEnv, self).__init__()
+
+        self.reward = reward
 
         # Number of different stimuli (excluding the delay)
         self.n_stimuli = n_stimuli
@@ -67,7 +69,7 @@ class DelaySampleToMatchEnv(gym.Env):
             done = True
             # print(self.sequence, self.sequence[self.current_step])
             if action == self.first_stimulus:
-                reward = 10
+                reward = self.reward
             else:
                 reward = -1
 

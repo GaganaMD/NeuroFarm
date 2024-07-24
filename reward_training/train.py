@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from neuromatch2024_experiments.q_networks import RNNQNetwork, LSTMQNetwork, GRUQNetwork
-from neuromatch2024_experiments.agents import DQNAgent
+from neuromatch2024_experiments.agents import DQNAgent, LSTMDQNAgent
 import numpy as np
 import torch
 import torch.nn.functional as F

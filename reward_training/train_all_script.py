@@ -9,6 +9,6 @@ def run_experiment(experiment):
     train(experiment)
 
 
-for key, value in experiments.items():
-    print(key, value)
-    run_experiment(value)
+# for key, value in experiments.items():
+    # print(key, value)
+run_experiment(experiment)
